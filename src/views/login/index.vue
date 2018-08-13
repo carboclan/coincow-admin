@@ -1,31 +1,32 @@
 <template>
   <div class="login-container">
-    <el-form class="login-form" autoComplete="on" :model="loginForm" :rules="loginRules" ref="loginForm" label-position="left">
+    <el-form class="login-form" autoComplete="on" ref="loginForm" label-position="left">
+      <h3 class="title">CoinCow Contract Admin</h3>
       <el-form-item>
         <el-button type="primary" style="width:100%;" :loading="loading" @click.native.prevent="handleLogin">
           Login in
         </el-button>
       </el-form-item>
+      <div class="tips">
+        <span style="margin-right:20px;">you need to be COO to create cows</span>
+      </div>
     </el-form>
   </div>
 </template>
 
 <script>
-import { web3, contracts } from '../lib/eth'
 export default {
   name: 'login',
   data() {
+    return {
+      loading: false
+    }
   },
   methods: {
-    async onStart () {
-      console.log('start')
-      const username = web3.toUtf8(await contracts.userInfo.nameOf(web3.eth.defaultAccount))
-      console.log(username)
-      if (username) {
-        alert('welcome back ' + username)
-        this.$router.push({path: '/dashboard'})
-        return
-      }
+    async handleLogin() {
+      await this.$store.dispatch('Login')
+      this.$router.push({path: '/'})
+      return
     }
   }
 }

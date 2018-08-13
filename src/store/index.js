@@ -1,22 +1,19 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import mutations from './mutations'
-import actions from './actions'
+import app from './modules/app'
+import user from './modules/user'
+import permission from './modules/permission'
+import getters from './getters'
 
 Vue.use(Vuex)
 
-const state = {
-  cowList: [], // cowlist
-  loadingCowList: false,
-  farmList: [], // farmlist
-  farmInfo: {
-    members: {}
+const store = new Vuex.Store({
+  modules: {
+    app,
+    user,
+    permission
   },
-  user: null // userinfo
-}
-
-export default new Vuex.Store({
-	state,
-	actions,
-	mutations,
+  getters
 })
+
+export default store
