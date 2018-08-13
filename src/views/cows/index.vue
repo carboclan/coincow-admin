@@ -65,7 +65,22 @@ export default {
   },
   methods: {
     async sellCow(cowId) {
-      await contracts.coinCowCore.createAuction(cowId, web3.toWei(1, 'ether'))
+      const res = await this.$prompt('Please input price in Ether', 'Tip', {
+        confirmButtonText: 'Sell',
+        cancelButtonText: 'Cancel',
+        inputType: 'number',
+        inputValidator: (_value) => {
+          if(_value > 0) {
+            return true
+          } else {
+            return 'Price should be more than 0'
+          }
+        }
+      })
+      if (res.action === 'confirm') {
+        await contracts.coinCowCore.createAuction(cowId, web3.toWei(res.value, 'ether'))
+        this.fetchData()
+      }
     },
     async fetchData() {
       if (this.listLoading) {
