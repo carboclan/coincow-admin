@@ -18,11 +18,11 @@ export const contracts = {
   auctionHouse: web3.loadContract(auctionHouseAbi, addresses.auctionHouse)
 }
 export const coinMap = {
-  [addresses.testEthCow]: {
+  [addresses.ethSwapCow]: {
     type: 'ether',
     contract: contracts.EtherCow
   },
-  [addresses.testBtcCow]: {
+  [addresses.btcSwapCow]: {
     type: 'bitcoin',
     contract: contracts.BitcoinCow
   }

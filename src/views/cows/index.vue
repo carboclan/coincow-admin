@@ -97,7 +97,7 @@ export default {
         console.log('get cow ' + i)
   			const cowId = await contracts.coinCowCore.getCow(i)
   			const cowCoin = coinMap[cowId[0]]
-  			const cowArray = await cowCoin.contract.getCowInfo(i)
+  			const [contractSize, lastStolen, lastMilkTime, startTime, endTime, totalMilked, totalStolen] = await cowCoin.contract.getCowInfo(i)
   			const owner = await contracts.coinCowCore.ownerOf(i)
   			const milk = await cowCoin.contract.milkAvailable(i)
   			const stealThreshold = await cowCoin.contract.stealThreshold()
@@ -109,13 +109,13 @@ export default {
   				contract: cowCoin.contract,
   				milkLevel: milk / stealThreshold > 1 ? 1 : milk / stealThreshold,
   				cowType: coinMap[cowId[0]].type,
-  				contractSize: cowArray[0].toNumber(),
-  				lastStolen: cowArray[1].toNumber(),
-  				lastMilkTime: parseTime(cowArray[2].toNumber()),
-  				startTime: parseTime(cowArray[3].toNumber()),
-  				endTime: parseTime(cowArray[4].toNumber()),
-  				totalMilked: cowArray[5].toNumber(),
-  				totalStolen: cowArray[6].toNumber()
+          contractSize: contractSize.toNumber(),
+          lastStolen: lastStolen.toNumber(),
+  				lastMilkTime: new Date(lastMilkTime.toNumber() * 1000),
+  				startTime: new Date(startTime.toNumber() * 1000),
+  				endTime: parseTime(endTime.toNumber() * 1000),
+  				totalMilked: totalMilked.toNumber(),
+  				totalStolen: totalStolen.toNumber()
   			}
         console.log('get auction ' + i)
   			const onAuction = await contracts.auctionHouse.isOnAuction(i)
