@@ -23,8 +23,8 @@ import { contracts } from '@/lib/eth'
 
 const unit = {};
 (async () => {
-  unit.eth = await contracts.EtherCow.contractUnit()
-  unit.btc = await contracts.BitcoinCow.contractUnit()
+  unit.EtherCow = await contracts.EtherCow.contractUnit()
+  unit.BitcoinCow = await contracts.BitcoinCow.contractUnit()
 })()
 
 export default {
