@@ -55,7 +55,7 @@ export default {
         }
       })
       if (res.action === 'confirm') {
-        await contracts[this.form.type].createCow(res.value, 7 * 24 * 3600)
+        await contracts[this.form.type].createCow(res.value, 7)
       }
     }
   }
