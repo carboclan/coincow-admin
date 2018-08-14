@@ -20,6 +20,13 @@
 
 <script>
 import { contracts } from '@/lib/eth'
+
+const unit = {};
+(async () => {
+  unit.eth = await contracts.EtherCow.contractUnit()
+  unit.btc = await contracts.BitcoinCow.contractUnit()
+})()
+
 export default {
   data() {
     return {
@@ -27,10 +34,7 @@ export default {
         { value: 'eth', label: 'Ethereum' },
         { value: 'btc', label: 'Bitcoin' }
       ],
-      unit: {
-        eth: 'GH',
-        btc: 'TH'
-      },
+      unit,
       form: {
         type: 'eth'
       }

@@ -10,8 +10,8 @@ const auctionHouseAbi = require('../../coincow-contracts/build/contracts/Auction
 export { web3 }
 export const contracts = {
   userInfo: web3.loadContract(userInfoAbi, addresses.userInfo),
-  EtherCow: web3.loadContract(TestCowAbi, addresses.testEthCow),
-  BitcoinCow: web3.loadContract(TestCowAbi, addresses.testBtcCow),
+  EtherCow: web3.loadContract(TestCowAbi, addresses.ethSwapCow),
+  BitcoinCow: web3.loadContract(TestCowAbi, addresses.btcSwapCow),
   coinCowCore: web3.loadContract(coinCowCoreAbi, addresses.coinCowCore),
   farm: web3.loadContract(farmAbi, addresses.farm),
   auctionHouse: web3.loadContract(auctionHouseAbi, addresses.auctionHouse)
