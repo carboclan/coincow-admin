@@ -31,12 +31,12 @@ export default {
   data() {
     return {
       options: [
-        { value: 'eth', label: 'Ethereum' },
-        { value: 'btc', label: 'Bitcoin' }
+        { value: 'EtherCow', label: 'Ethereum' },
+        { value: 'BitcoinCow', label: 'Bitcoin' }
       ],
       unit,
       form: {
-        type: 'eth'
+        type: 'EtherCow'
       }
     }
   },
@@ -55,21 +55,8 @@ export default {
         }
       })
       if (res.action === 'confirm') {
-        if (this.form.type === 'btc') {
-          this.createBtcCow(res.value)
-        }
-        if (this.form.type === 'eth') {
-          this.createEthCow(res.value)
-        }
+        await contracts[this.form.type].createCow(res.value, 7 * 24 * 3600)
       }
-    },
-    async createEthCow () {
-      const cowId = await contracts.EtherCow.createCow()
-      console.log(cowId)
-    },
-    async createBtcCow () {
-      const cowId = await contracts.BitcoinCow.createCow()
-      console.log(cowId)
     }
   }
 }
