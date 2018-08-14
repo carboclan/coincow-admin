@@ -27,18 +27,36 @@ export default {
         { value: 'eth', label: 'Ethereum' },
         { value: 'btc', label: 'Bitcoin' }
       ],
+      unit: {
+        eth: 'GH',
+        btc: 'TH'
+      },
       form: {
         type: 'eth'
       }
     }
   },
   methods: {
-    onSubmit() {
-      if (this.form.type === 'btc') {
-        this.createBtcCow()
-      }
-      if (this.form.type === 'eth') {
-        this.createEthCow()
+    async onSubmit() {
+      const res = await this.$prompt('Please input hash rate in ' + this.unit[this.form.type], 'Tip', {
+        confirmButtonText: 'Confirm',
+        cancelButtonText: 'Cancel',
+        inputType: 'number',
+        inputValidator: (_value) => {
+          if(_value > 0) {
+            return true
+          } else {
+            return 'hash rate should be more than 0'
+          }
+        }
+      })
+      if (res.action === 'confirm') {
+        if (this.form.type === 'btc') {
+          this.createBtcCow(res.value)
+        }
+        if (this.form.type === 'eth') {
+          this.createEthCow(res.value)
+        }
       }
     },
     async createEthCow () {
