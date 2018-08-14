@@ -16,6 +16,11 @@
           <span>{{scope.row.owner}}</span>
         </template>
       </el-table-column>
+      <el-table-column label="Hash Rate" width="360" align="center">
+        <template slot-scope="scope">
+          <span>{{scope.row.contractSize}}{{scope.row.contractUnit}}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="End Time" width="200" align="center">
         <template slot-scope="scope">
           <span>{{scope.row.endTime}}</span>
@@ -23,7 +28,7 @@
       </el-table-column>
       <el-table-column label="Milk Level" width="150" align="center">
         <template slot-scope="scope">
-          {{scope.row.milkLevel}}
+          {{scope.row.milkLevel.toFixed(6)}}
         </template>
       </el-table-column>
       <el-table-column class-name="status-col" label="Status" width="110" align="center">
@@ -97,6 +102,7 @@ export default {
         console.log('get cow ' + i)
   			const cowId = await contracts.coinCowCore.getCow(i)
   			const cowCoin = coinMap[cowId[0]]
+        const contractUnit = await cowCoin.contract.contractUnit()
   			const [contractSize, lastStolen, lastMilkTime, startTime, endTime, totalMilked, totalStolen] = await cowCoin.contract.getCowInfo(i)
   			const owner = await contracts.coinCowCore.ownerOf(i)
   			const milk = await cowCoin.contract.milkAvailable(i)
@@ -110,6 +116,7 @@ export default {
   				milkLevel: milk / stealThreshold > 1 ? 1 : milk / stealThreshold,
   				cowType: coinMap[cowId[0]].type,
           contractSize: contractSize.toNumber(),
+          contractUnit,
           lastStolen: lastStolen.toNumber(),
   				lastMilkTime: new Date(lastMilkTime.toNumber() * 1000),
   				startTime: new Date(startTime.toNumber() * 1000),
