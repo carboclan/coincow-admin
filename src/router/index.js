@@ -60,7 +60,6 @@ export const asyncRouterMap = [
       }
     ]
   },
-
   {
     path: '/createcow',
     component: Layout,
@@ -69,7 +68,7 @@ export const asyncRouterMap = [
         path: 'createcow',
         name: 'CreateCow',
         component: () => import('@/views/createcow/index'),
-        meta: { title: 'Create Cow', icon: 'createcow' }
+        meta: { title: 'Create Cow', icon: 'createcow', roles: ['coo'] }
       }
     ]
   },

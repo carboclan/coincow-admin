@@ -16,17 +16,17 @@
           <span>{{scope.row.owner}}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Hash Rate" width="360" align="center">
+      <el-table-column label="Hash Rate" width="200" align="center">
         <template slot-scope="scope">
           <span>{{scope.row.contractSize}}{{scope.row.contractUnit}}</span>
         </template>
       </el-table-column>
       <el-table-column label="End Time" width="200" align="center">
         <template slot-scope="scope">
-          <span>{{scope.row.endTime}}</span>
+          <span>{{parseTime(scope.row.endTime * 1000)}}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Milk Level" width="150" align="center">
+      <el-table-column label="Milk Level" width="100" align="center">
         <template slot-scope="scope">
           {{scope.row.milkLevel.toFixed(6)}}
         </template>
@@ -37,12 +37,13 @@
           <el-tag v-if="!scope.row.onAuction">Milking</el-tag>
         </template>
       </el-table-column>
-      <el-table-column align="center" prop="created_at" label="Action" width="200">
+      <el-table-column align="center" prop="created_at" label="Action" width="150">
         <template slot-scope="scope">
-          <el-button round :disabled="scope.row.owner !== token || scope.row.onAuction" type="primary" v-on:click="sellCow(scope.row.cowId)">Sell</el-button>
+          <el-button round :disabled="scope.row.owner !== token || scope.row.onAuction" type="primary" v-on:click="sellCow(scope.row)">Sell</el-button>
         </template>
       </el-table-column>
     </el-table>
+    <calculator :showSellerDialog="showSellerDialog" :cowData="cowData" v-on:close="onCloseCal"/>
   </div>
 </template>
 
@@ -50,11 +51,15 @@
 import { mapGetters } from 'vuex'
 import { parseTime } from '@/utils/index'
 import { contracts, coinMap, web3 } from '@/lib/eth'
+import calculator from './calculator'
 export default {
+  components: { calculator },
   data() {
     return {
       list: null,
-      listLoading: false
+      listLoading: false,
+      showSellerDialog: false,
+      cowData: null
     }
   },
   computed: {
@@ -69,23 +74,17 @@ export default {
     this.fetchData()
   },
   methods: {
-    async sellCow(cowId) {
-      const res = await this.$prompt('Please input price in Ether', 'Tip', {
-        confirmButtonText: 'Sell',
-        cancelButtonText: 'Cancel',
-        inputType: 'number',
-        inputValidator: (_value) => {
-          if(_value > 0) {
-            return true
-          } else {
-            return 'Price should be more than 0'
-          }
-        }
-      })
-      if (res.action === 'confirm') {
-        await contracts.coinCowCore.createAuction(cowId, web3.toWei(res.value, 'ether'))
-        this.fetchData()
-      }
+    parseTime,
+    async sellCow(cow) {
+      this.cowData = cow
+      this.showSellerDialog = true
+    },
+    onSold() {
+      this.showSellerDialog = false
+      this.fetchData()
+    },
+    onCloseCal() {
+      this.showSellerDialog = false
     },
     async fetchData() {
       if (this.listLoading) {
@@ -118,9 +117,9 @@ export default {
           contractSize: contractSize.toNumber(),
           contractUnit,
           lastStolen: lastStolen.toNumber(),
-  				lastMilkTime: new Date(lastMilkTime.toNumber() * 1000),
-  				startTime: new Date(startTime.toNumber() * 1000),
-  				endTime: parseTime(endTime.toNumber() * 1000),
+  				lastMilkTime: lastMilkTime.toNumber(),
+  				startTime: startTime.toNumber(),
+  				endTime: endTime.toNumber(),
   				totalMilked: totalMilked.toNumber(),
   				totalStolen: totalStolen.toNumber()
   			}

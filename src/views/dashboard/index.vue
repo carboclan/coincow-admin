@@ -1,7 +1,7 @@
 <template>
   <div class="dashboard-container">
-    <div class="dashboard-text">name:{{name}}</div>
-    <div class="dashboard-text">roles:<span v-for='role in roles' :key='role'>{{role}}</span></div>
+    <div class="dashboard-text">Username: {{name}}</div>
+    <div class="dashboard-text">Roles: <el-tag v-for='role in roles' :key='role'>{{role}}</el-tag></div>
   </div>
 </template>
 
@@ -25,7 +25,7 @@ export default {
     margin: 30px;
   }
   &-text {
-    font-size: 30px;
+    font-size: 14px;
     line-height: 46px;
   }
 }

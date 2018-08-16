@@ -37,6 +37,12 @@ const user = {
 
     // 获取用户信息
     async GetInfo({ commit, state }) {
+      const token = web3.eth.defaultAccount
+      if (token !== state.token) {
+        throw(new Error('login again'))
+      }
+      const username = web3.toUtf8(await contracts.userInfo.nameOf(token))
+      commit('SET_NAME', username)
       const userAddress = state.token
       const coo = await contracts.coinCowCore.cooAddress()
       const roles = ['user']

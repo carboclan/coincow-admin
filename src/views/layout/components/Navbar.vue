@@ -4,7 +4,7 @@
     <breadcrumb></breadcrumb>
     <el-dropdown class="avatar-container" trigger="click">
       <div class="avatar-wrapper">
-        <img class="user-avatar" :src="avatar+'?imageView2/1/w/80/h/80'">
+        <img class="user-avatar" src="~@/assets/avt.png">
         <i class="el-icon-caret-bottom"></i>
       </div>
       <el-dropdown-menu class="user-dropdown" slot="dropdown">
@@ -15,6 +15,9 @@
         </router-link>
         <el-dropdown-item divided>
           <span @click="logout" style="display:block;">LogOut</span>
+        </el-dropdown-item>
+        <el-dropdown-item divided>
+          <span @click="goFarm" style="display:block;">Go to Farm</span>
         </el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
@@ -45,6 +48,9 @@ export default {
       this.$store.dispatch('LogOut').then(() => {
         location.reload() // 为了重新实例化vue-router对象 避免bug
       })
+    },
+    goFarm() {
+      location.href = 'http://www.coincow.farm'
     }
   }
 }
@@ -91,4 +97,3 @@ export default {
   }
 }
 </style>
-
