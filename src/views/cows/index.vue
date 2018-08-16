@@ -43,7 +43,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <calculator :showSellerDialog="showSellerDialog" :cowData="cowData" v-on:close="onCloseCal"/>
+    <calculator :showSellerDialog="showSellerDialog" :cowData="cowData" v-on:close="onCloseCal" v-on:sold="onSold"/>
   </div>
 </template>
 

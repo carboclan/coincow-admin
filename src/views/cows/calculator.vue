@@ -92,7 +92,7 @@ export default {
       const tx = await contracts.coinCowCore.createAuction(this.cowData.cowId, web3.toWei(this.price, 'ether'))
       await web3.eth.getTransactionReceipt(tx)
       console.log('sell')
-      this.$emit('close')
+      this.$emit('sold')
     }
   }
 }

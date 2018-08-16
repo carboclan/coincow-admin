@@ -49,6 +49,10 @@ const user = {
       if (userAddress === coo) {
         roles.push('coo')
       }
+      const underwriter = await contracts.coinCowCore.isUnderwriter(token)
+      if (underwriter) {
+        roles.push('underwriter')
+      }
       commit('SET_ROLES', roles)
       const user = {
         roles

@@ -46,11 +46,11 @@ export default new Router({
 
 export const asyncRouterMap = [
   {
-    path: '/management',
+    path: '/user',
     component: Layout,
-    redirect: '/management/cows',
-    name: 'Management',
-    meta: { title: 'Management', icon: 'management' },
+    redirect: '/user/cows',
+    name: 'User',
+    meta: { title: 'User', icon: 'user' },
     children: [
       {
         path: 'cows',
@@ -61,17 +61,34 @@ export const asyncRouterMap = [
     ]
   },
   {
-    path: '/createcow',
+    path: '/underwriter',
     component: Layout,
+    redirect: '/underwriter/createcow',
+    name: 'Underwriter',
+    meta: { title: 'Underwriter', icon: 'underwriter' },
     children: [
       {
         path: 'createcow',
         name: 'CreateCow',
         component: () => import('@/views/createcow/index'),
-        meta: { title: 'Create Cow', icon: 'createcow', roles: ['coo'] }
+        meta: { title: 'Create Cow', icon: 'createcow', roles: ['underwriter'] }
       }
     ]
   },
-
+  {
+    path: '/coo',
+    component: Layout,
+    redirect: '/coo/underwriter',
+    name: 'COO',
+    meta: { title: 'COO', icon: 'COO' },
+    children: [
+      {
+        path: 'underwriter',
+        name: 'Underwriter',
+        component: () => import('@/views/underwriter/index'),
+        meta: { title: 'Underwriter', icon: 'underwriter', roles: ['coo'] }
+      }
+    ]
+  },
   { path: '*', redirect: '/404', hidden: true }
 ]
