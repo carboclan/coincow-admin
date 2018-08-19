@@ -89,7 +89,7 @@ export default {
         alert('price too low')
         return
       }
-      const tx = await contracts.coinCowCore.createAuction(this.cowData.cowId, web3.toWei(this.price, 'ether'))
+      const tx = await contracts.coinCowCore.createAuction(this.cowData.cowId, web3.toWei(this.form.price, 'ether'))
       await web3.eth.getTransactionReceipt(tx)
       console.log('sell')
       this.$emit('sold')
