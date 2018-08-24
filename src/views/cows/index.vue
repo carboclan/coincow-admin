@@ -50,8 +50,10 @@
 <script>
 import { mapGetters } from 'vuex'
 import { parseTime } from '@/utils/index'
-import { contracts, coinMap, web3 } from '@/lib/eth'
+import { coinMap } from '@/lib/eth'
 import calculator from './calculator'
+import { getCowList } from '@/lib/api'
+import { sleep } from '@/lib/util'
 export default {
   components: { calculator },
   data() {
@@ -87,57 +89,37 @@ export default {
       this.showSellerDialog = false
     },
     async fetchData() {
+      await sleep(4000)
       if (this.listLoading) {
         return
       }
       this.listLoading = true
       this.list = []
-  		const total = (await contracts.coinCowCore.totalSupply()).toNumber()
-      const cowIndex = []
-      for (let i = 1; i < total + 1; i++) {
-        cowIndex.push(i)
-      }
-      const cowPromises = cowIndex.map(async i => {
-        console.log('get cow ' + i)
-  			const cowId = await contracts.coinCowCore.getCow(i)
-  			const cowCoin = coinMap[cowId[0]]
-        const contractUnit = await cowCoin.contract.contractUnit()
-  			const [contractSize, lastStolen, lastMilkTime, startTime, endTime, totalMilked, totalStolen] = await cowCoin.contract.getCowInfo(i)
-  			const owner = await contracts.coinCowCore.ownerOf(i)
-  			const milk = await cowCoin.contract.milkAvailable(i)
-  			const stealThreshold = await cowCoin.contract.stealThreshold()
-  			const cow = {
-  				cowId: i,
-  				owner,
-  				milk,
-  				stealThreshold,
-  				contract: cowCoin.contract,
-  				milkLevel: milk / stealThreshold > 1 ? 1 : milk / stealThreshold,
-  				cowType: coinMap[cowId[0]].type,
-          contractSize: contractSize.toNumber(),
-          contractUnit,
-          lastStolen: lastStolen.toNumber(),
-  				lastMilkTime: lastMilkTime.toNumber(),
-  				startTime: startTime.toNumber(),
-  				endTime: endTime.toNumber(),
-  				totalMilked: totalMilked.toNumber(),
-  				totalStolen: totalStolen.toNumber()
-  			}
-        console.log('get auction ' + i)
-  			const onAuction = await contracts.auctionHouse.isOnAuction(i)
-  			if (onAuction) {
-  				cow.onAuction = true
-  				const auctionArray = await contracts.auctionHouse.getAuction(i)
-  				cow.price = web3.fromWei(auctionArray[1].toNumber())
-  				cow.seller = auctionArray[0]
-  			} else {
-  				cow.onAuction = false
-  			}
-        this.list.push(cow)
-        console.log(cow)
-  			return cow
-  		})
-      await Promise.all(cowPromises)
+      console.log('start getCow')
+  		const resp = await getCowList()
+      const cowListPromise = resp.result.map(async cow => {
+        const cowCoin = coinMap[cow.contract]
+        cow.cowType = coinMap[cow.contract].type
+        cow.contractUnit = coinMap[cow.contract].contractUnit
+        cow.contractAddress = cow.contract
+        cow.contract = cowCoin.contract
+        const [contractSize, lastStolen, lastMilkTime, startTime, endTime, totalMilked, totalStolen] = await cowCoin.contract.getCowInfo(cow.id)
+        cow.contractSize = contractSize.toNumber()
+        cow.lastStolen = lastStolen.toNumber()
+        cow.lastMilkTime = lastMilkTime.toNumber()
+        cow.startTime = startTime.toNumber()
+        cow.endTime = endTime.toNumber()
+        cow.totalMilked = totalMilked.toNumber()
+        cow.totalStolen = totalStolen.toNumber()
+        cow.milk = await cowCoin.contract.milkAvailable(cow.id)
+        cow.stealThreshold = cowCoin.stealThreshold = cowCoin.stealThreshold || await cowCoin.contract.stealThreshold()
+        cow.milkThreshold = cowCoin.milkThreshold = cowCoin.milkThreshold || await cowCoin.contract.milkThreshold()
+        cow.milkLevel = cow.milk / cow.stealThreshold > 1 ? 1 : cow.milk / cow.stealThreshold
+        return cow
+      })
+      const cowList = await Promise.all(cowListPromise)
+      console.log('end getCow')
+      this.list = cowList
       this.listLoading = false
     }
   }
