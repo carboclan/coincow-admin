@@ -84,7 +84,7 @@ export const asyncRouterMap = [
     children: [
       {
         path: 'underwriter',
-        name: 'Underwriter',
+        name: 'UnderwriterManager',
         component: () => import('@/views/underwriter/index'),
         meta: { title: 'Underwriter', icon: 'underwriter', roles: ['coo'] }
       }

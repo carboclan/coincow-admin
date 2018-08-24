@@ -3,7 +3,7 @@
     <el-table :data="list" v-loading="listLoading" element-loading-text="Loading" border fit highlight-current-row>
       <el-table-column align="center" label='ID' width="95">
         <template slot-scope="scope">
-          {{scope.row.cowId}}
+          {{scope.row.id}}
         </template>
       </el-table-column>
       <el-table-column label="Type" width="110" align="center">
@@ -71,7 +71,7 @@ export default {
   },
   filters: {
   },
-  created() {
+  mounted() {
     console.log('fetch data')
     this.fetchData()
   },
@@ -81,15 +81,15 @@ export default {
       this.cowData = cow
       this.showSellerDialog = true
     },
-    onSold() {
+    async onSold() {
       this.showSellerDialog = false
+      await sleep(1000)
       this.fetchData()
     },
     onCloseCal() {
       this.showSellerDialog = false
     },
     async fetchData() {
-      await sleep(4000)
       if (this.listLoading) {
         return
       }
@@ -111,6 +111,7 @@ export default {
         cow.endTime = endTime.toNumber()
         cow.totalMilked = totalMilked.toNumber()
         cow.totalStolen = totalStolen.toNumber()
+        cow.onAuction = cow.price > 0
         cow.milk = await cowCoin.contract.milkAvailable(cow.id)
         cow.stealThreshold = cowCoin.stealThreshold = cowCoin.stealThreshold || await cowCoin.contract.stealThreshold()
         cow.milkThreshold = cowCoin.milkThreshold = cowCoin.milkThreshold || await cowCoin.contract.milkThreshold()
